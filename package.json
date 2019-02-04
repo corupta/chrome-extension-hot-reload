@@ -1,6 +1,6 @@
 {
   "name": "chrome-extension-hot-reload",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "hot reloads chrome extension on development, affects popup tabs and options page",
   "main": "dist/index.js",
   "scripts": {

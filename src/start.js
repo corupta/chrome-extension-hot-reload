@@ -20,18 +20,20 @@ const start = (options = {}) => {
   options.retryTime = options.retryTime || 1000;
   options.dbg = options.dbg || false;
   let previousTimestamp = null;
-  const getTimeStamp = (dir) =>
+  const getTimeStamp = (dir) => new Promise((resolve) =>
     dir.createReader().readEntries(
       (entries) => Promise.all(
         entries.filter((e) => e.name[0] !== '.')
           .map((e) => e.isDirectory
             ? getTimeStamp(e)
-            : new Promise((resolve) => e.file(resolve))
+            : new Promise((innerResolve) => e.file(innerResolve))
           )
       )
+        .then((files) => resolve(
+          files.reduce((acc, { name, lastModifiedDate }) => `${acc}${name}${lastModifiedDate}`, '')
+        ))
     )
-      .then((files) => files
-        .reduce((acc, { name, lastModifiedDate }) => `${acc}${name}${lastModifiedDate}`, ''));
+  );
   const retry = (dir) =>
     getTimeStamp(dir)
       .then((nextTimestamp) => {

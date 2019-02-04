@@ -35,20 +35,22 @@ var start = function start() {
   var previousTimestamp = null;
 
   var getTimeStamp = function getTimeStamp(dir) {
-    return dir.createReader().readEntries(function (entries) {
-      return Promise.all(entries.filter(function (e) {
-        return e.name[0] !== '.';
-      }).map(function (e) {
-        return e.isDirectory ? getTimeStamp(e) : new Promise(function (resolve) {
-          return e.file(resolve);
+    return new Promise(function (resolve) {
+      return dir.createReader().readEntries(function (entries) {
+        return Promise.all(entries.filter(function (e) {
+          return e.name[0] !== '.';
+        }).map(function (e) {
+          return e.isDirectory ? getTimeStamp(e) : new Promise(function (innerResolve) {
+            return e.file(innerResolve);
+          });
+        })).then(function (files) {
+          return resolve(files.reduce(function (acc, _ref) {
+            var name = _ref.name,
+                lastModifiedDate = _ref.lastModifiedDate;
+            return "".concat(acc).concat(name).concat(lastModifiedDate);
+          }, ''));
         });
-      }));
-    }).then(function (files) {
-      return files.reduce(function (acc, _ref) {
-        var name = _ref.name,
-            lastModifiedDate = _ref.lastModifiedDate;
-        return "".concat(acc).concat(name).concat(lastModifiedDate);
-      }, '');
+      });
     });
   };
 

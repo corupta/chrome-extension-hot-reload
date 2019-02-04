@@ -62,9 +62,9 @@ HotReload.connect({
 
 ## Features
 
-*   Reloads tabs just as [crx-hotreload](https://github.com/xpl/crx-hotreload).
 *   Doesn't close `popup` / `options` page (doesn't force reloads the extension)
 *   Using only in `background.js` is enough for hot reloading options page
 *   Can also hot reload popups, using `start/connect` syntax (even if you do not have a `background script`, in order to get hot reloading in popups, you should create a `background script` file in which you call `start`)
-
+*   Reloads tabs just as [crx-hotreload](https://github.com/xpl/crx-hotreload).
+*   Doesn't run if the extension is not in development mode just as [crx-hotreload](https://github.com/xpl/crx-hotreload).
 

@@ -35,9 +35,9 @@ var start = function start() {
   var previousTimestamp = null,
       rootDir = null;
 
-  var getTimeStamp = function getTimeStamp(dir) {
+  var getTimeStamp = function getTimeStamp() {
     return new Promise(function (resolve) {
-      return dir.createReader().readEntries(function (entries) {
+      return rootDir.createReader().readEntries(function (entries) {
         return Promise.all(entries.filter(function (e) {
           return e.name[0] !== '.';
         }).map(function (e) {

@@ -20,8 +20,8 @@ const start = (options = {}) => {
   options.retryTime = options.retryTime || 1000;
   options.dbg = options.dbg || false;
   let previousTimestamp = null, rootDir = null;
-  const getTimeStamp = (dir) => new Promise((resolve) =>
-    dir.createReader().readEntries(
+  const getTimeStamp = () => new Promise((resolve) =>
+    rootDir.createReader().readEntries(
       (entries) => Promise.all(
         entries.filter((e) => e.name[0] !== '.')
           .map((e) => e.isDirectory

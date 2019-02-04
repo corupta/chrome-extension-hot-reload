@@ -20,8 +20,8 @@ const start = (options = {}) => {
   options.retryTime = options.retryTime || 1000;
   options.dbg = options.dbg || false;
   let previousTimestamp = null, rootDir = null;
-  const getTimeStamp = () => new Promise((resolve) =>
-    rootDir.createReader().readEntries(
+  const getTimeStamp = (dir) => new Promise((resolve) =>
+    dir.createReader().readEntries(
       (entries) => Promise.all(
         entries.filter((e) => e.name[0] !== '.')
           .map((e) => e.isDirectory
@@ -34,8 +34,8 @@ const start = (options = {}) => {
         ))
     )
   );
-  const retry = (dir) =>
-    getTimeStamp(dir)
+  const retry = () =>
+    getTimeStamp(rootDir)
       .then((nextTimestamp) => {
         if (previousTimestamp && nextTimestamp !== previousTimestamp) {
           reload(ports);

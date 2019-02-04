@@ -35,9 +35,9 @@ var start = function start() {
   var previousTimestamp = null,
       rootDir = null;
 
-  var getTimeStamp = function getTimeStamp() {
+  var getTimeStamp = function getTimeStamp(dir) {
     return new Promise(function (resolve) {
-      return rootDir.createReader().readEntries(function (entries) {
+      return dir.createReader().readEntries(function (entries) {
         return Promise.all(entries.filter(function (e) {
           return e.name[0] !== '.';
         }).map(function (e) {
@@ -55,8 +55,8 @@ var start = function start() {
     });
   };
 
-  var retry = function retry(dir) {
-    return getTimeStamp(dir).then(function (nextTimestamp) {
+  var retry = function retry() {
+    return getTimeStamp(rootDir).then(function (nextTimestamp) {
       if (previousTimestamp && nextTimestamp !== previousTimestamp) {
         reload(ports);
       }

@@ -19,7 +19,7 @@ const start = (options = {}) => {
   const ports = {};
   options.retryTime = options.retryTime || 1000;
   options.dbg = options.dbg || false;
-  let previousTimestamp = null;
+  let previousTimestamp = null, rootDir = null;
   const getTimeStamp = (dir) => new Promise((resolve) =>
     dir.createReader().readEntries(
       (entries) => Promise.all(
@@ -45,7 +45,10 @@ const start = (options = {}) => {
 
   chrome.management.getSelf((self) => {
     if (self.installType === 'development') {
-      chrome.runtime.getPackageDirectoryEntry(retry);
+      chrome.runtime.getPackageDirectoryEntry((dir) => {
+        rootDir = dir;
+        setInterval(retry, options.retryTime);
+      });
       chrome.runtime.onConnect.addListener((port) => {
         ports[port.name] = port;
         if (options.dbg) {

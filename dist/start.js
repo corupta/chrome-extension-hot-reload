@@ -32,7 +32,8 @@ var start = function start() {
   var ports = {};
   options.retryTime = options.retryTime || 1000;
   options.dbg = options.dbg || false;
-  var previousTimestamp = null;
+  var previousTimestamp = null,
+      rootDir = null;
 
   var getTimeStamp = function getTimeStamp(dir) {
     return new Promise(function (resolve) {
@@ -66,7 +67,10 @@ var start = function start() {
 
   chrome.management.getSelf(function (self) {
     if (self.installType === 'development') {
-      chrome.runtime.getPackageDirectoryEntry(retry);
+      chrome.runtime.getPackageDirectoryEntry(function (dir) {
+        rootDir = dir;
+        setInterval(retry, options.retryTime);
+      });
       chrome.runtime.onConnect.addListener(function (port) {
         ports[port.name] = port;
 
